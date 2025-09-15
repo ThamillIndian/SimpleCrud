@@ -1,4 +1,4 @@
-# CodeCraftr - Product Inventory Management System
+# Product Inventory Management System
 
 A modern, full-stack product inventory management application built with React, TypeScript, Node.js, and PostgreSQL. This application provides a clean, intuitive interface for managing product inventory with CRUD operations.
 
