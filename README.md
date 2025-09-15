@@ -64,7 +64,7 @@ A modern, full-stack product inventory management application built with React, 
 
 1. Clone the repository
    ```bash
-   git clone https://github.com/ThamillIndian/SimpleCrud
+   git clone https://github.com/your-username/CodeCraftr.git
    cd CodeCraftr
    ```
 
