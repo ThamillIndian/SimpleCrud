@@ -1,0 +1,63 @@
+Of course. Let's consolidate everything into one final, highly detailed "master" prompt. This version includes explicit instructions on folder structure, code comments, and styling to ensure the AI assistant gives you the best possible starting point.
+
+Here is the complete and detailed development prompt for Replit:
+
+Master Prompt for AI Code Assistant
+Project Title: Full-Stack Product Inventory CRUD Application
+
+Primary Objective:
+Generate a complete full-stack web application for managing a product inventory. The application must support all four CRUD operations (Create, Read, Update, Delete) through a clean user interface.
+
+1. Project Structure:
+
+Create a root directory. Inside this root, create two sub-directories:
+
+client: This will contain the entire React frontend application.
+
+server: This will contain the entire Node.js backend application.
+
+2. Backend Specifications (server directory):
+
+Framework: Use Node.js with the Express.js framework.
+
+Database: Use a simple JSON file named db.json to act as the database. This file should be located inside the server directory and be pre-populated with 2-3 example products.
+
+Data Schema: Each product object within db.json must contain:
+
+id: A unique string (e.g., a UUID).
+
+name: A string (e.g., "Wireless Mouse").
+
+sku: A string (e.g., "LOGI-MX-M123").
+
+quantity: A number (e.g., 150).
+
+description: A string (e.g., "Ergonomic wireless mouse with 6 buttons.").
+
+API Endpoints: Create a well-commented REST API with the following endpoints. Each function should have a comment explaining its purpose.
+
+GET /api/products: Fetches and returns the entire list of products from db.json.
+
+POST /api/products: Receives product data in the request body, adds a new product with a unique ID to db.json, and returns the newly created product.
+
+PUT /api/products/:id: Receives updated product data in the request body, finds the product with the matching :id in db.json, updates it, and returns the updated product.
+
+DELETE /api/products/:id: Finds the product with the matching :id in db.json, removes it, and returns a confirmation message.
+
+3. Frontend Specifications (client directory):
+
+Framework: Use React. Set up the project using the Vite build tool.
+
+Components: Structure the UI into logical components (e.g., ProductList, ProductItem, AddProductForm, EditProductModal).
+
+Functionality:
+
+Read: On page load, fetch all products from the backend GET /api/products endpoint and display them in a clean table or grid.
+
+Create: Provide a form that allows users to input details for a new product. Submitting this form should send a POST request to the backend. The UI should automatically update to show the new product without a page reload.
+
+Update: Each product in the list must have an "Edit" button. Clicking it should open a modal (pop-up) with a form pre-filled with the product's current data. Submitting this form should send a PUT request. The UI should update instantly.
+
+Delete: Each product must have a "Delete" button. Clicking it should send a DELETE request to the backend. The product should be removed from the UI instantly.
+
+Styling: Use a single CSS file (index.css or App.css) for all styling. Keep the design clean, simple, and professional. Do not use complex component libraries like Material-UI or Bootstrap.
