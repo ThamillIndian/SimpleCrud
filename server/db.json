@@ -1,15 +1,8 @@
 {
   "products": [
     {
-      "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-      "name": "Wireless Bluetooth Mouse",
-      "sku": "LOGI-MX-M123",
-      "quantity": 150,
-      "description": "Ergonomic wireless mouse with 6 programmable buttons and long battery life"
-    },
-    {
       "id": "b2c3d4e5-f6g7-8901-bcde-f12345678901",
-      "name": "USB-C Hub", 
+      "name": "USB-C Hub",
       "sku": "TECH-HUB-001",
       "quantity": 75,
       "description": "7-in-1 USB-C hub with HDMI, USB ports, SD card reader, and power delivery"
@@ -20,6 +13,13 @@
       "sku": "KEYS-MX-PRO",
       "quantity": 5,
       "description": "RGB backlit mechanical keyboard with Cherry MX switches"
+    },
+    {
+      "name": "laptop",
+      "sku": "FDVD",
+      "quantity": 51,
+      "description": "fwwff",
+      "id": "73a20342-03bf-42db-9090-d3f18c254a8b"
     }
   ]
 }
