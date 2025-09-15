@@ -2,7 +2,10 @@
 
 A modern, full-stack product inventory management application built with React, TypeScript, Node.js, and PostgreSQL. This application provides a clean, intuitive interface for managing product inventory with CRUD operations.
 
-![Application Screenshot](./attached_assets/Screenshot%202025-09-15%20224328_1757956428687.png)
+<div style="display: flex; gap: 1rem; margin: 1rem 0;">
+  <img src="./attached_assets/Screenshot 2025-09-15 231322.png" alt="Product List View" style="width: 48%; border: 1px solid #e5e7eb; border-radius: 0.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1);" />
+  <img src="./attached_assets/Screenshot 2025-09-15 231334.png" alt="Product Edit View" style="width: 48%; border: 1px solid #e5e7eb; border-radius: 0.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1);" />
+</div>
 
 ## Features
 
