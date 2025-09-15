@@ -1,98 +1,143 @@
 import { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import ProductList from "./ProductList";
 import AddProductForm from "./AddProductForm";
 import EditProductModal from "./EditProductModal";
 import type { Product, InsertProduct } from "@shared/schema";
 
-export default function InventoryApp() {
-  // TODO: remove mock functionality - replace with real API calls
-  const [products, setProducts] = useState<Product[]>([
-    {
-      id: "1",
-      name: "Wireless Bluetooth Mouse",
-      sku: "LOGI-MX-M123",
-      quantity: 150,
-      description: "Ergonomic wireless mouse with 6 programmable buttons and long battery life"
-    },
-    {
-      id: "2", 
-      name: "USB-C Hub",
-      sku: "TECH-HUB-001",
-      quantity: 75,
-      description: "7-in-1 USB-C hub with HDMI, USB ports, SD card reader, and power delivery"
-    },
-    {
-      id: "3",
-      name: "Mechanical Keyboard",
-      sku: "KEYS-MX-PRO",
-      quantity: 5,
-      description: "RGB backlit mechanical keyboard with Cherry MX switches"
-    },
-    {
-      id: "4",
-      name: "Webcam HD",
-      sku: "CAM-HD-200",
-      quantity: 0,
-      description: "1080p HD webcam with built-in microphone for video conferencing"
-    }
-  ]);
+// API functions for product operations
+const fetchProducts = async (): Promise<Product[]> => {
+  const response = await fetch('/api/products');
+  if (!response.ok) {
+    throw new Error('Failed to fetch products');
+  }
+  return response.json();
+};
 
+const createProduct = async (productData: InsertProduct): Promise<Product> => {
+  const response = await fetch('/api/products', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(productData),
+  });
+  
+  if (!response.ok) {
+    throw new Error('Failed to create product');
+  }
+  
+  return response.json();
+};
+
+const updateProduct = async ({ id, updates }: { id: string; updates: InsertProduct }): Promise<Product> => {
+  const response = await fetch(`/api/products/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(updates),
+  });
+  
+  if (!response.ok) {
+    throw new Error('Failed to update product');
+  }
+  
+  return response.json();
+};
+
+const deleteProduct = async (productId: string): Promise<void> => {
+  const response = await fetch(`/api/products/${productId}`, {
+    method: 'DELETE',
+  });
+  
+  if (!response.ok) {
+    throw new Error('Failed to delete product');
+  }
+};
+
+export default function InventoryApp() {
+  const queryClient = useQueryClient();
   const [currentView, setCurrentView] = useState<"list" | "add">("list");
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Generate simple ID for demo purposes
-  const generateId = () => Math.random().toString(36).substr(2, 9);
+  // Fetch products using React Query
+  const { data: products = [], isLoading, error } = useQuery({
+    queryKey: ['/api/products'],
+    queryFn: fetchProducts,
+  });
 
-  const handleAddProduct = async (productData: InsertProduct) => {
-    console.log('Adding product:', productData);
-    setIsSubmitting(true);
-    
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    const newProduct: Product = {
-      id: generateId(),
-      ...productData
-    };
-    
-    setProducts(prev => [...prev, newProduct]);
-    setCurrentView("list");
-    setIsSubmitting(false);
-    
-    console.log('Product added successfully:', newProduct);
+  // Create product mutation
+  const createProductMutation = useMutation({
+    mutationFn: createProduct,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/products'] });
+      setCurrentView("list");
+    },
+    onError: (error) => {
+      console.error('Error creating product:', error);
+      alert('Failed to create product. Please try again.');
+    },
+  });
+
+  // Update product mutation
+  const updateProductMutation = useMutation({
+    mutationFn: updateProduct,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/products'] });
+      setEditingProduct(null);
+    },
+    onError: (error) => {
+      console.error('Error updating product:', error);
+      alert('Failed to update product. Please try again.');
+    },
+  });
+
+  // Delete product mutation
+  const deleteProductMutation = useMutation({
+    mutationFn: deleteProduct,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/products'] });
+    },
+    onError: (error) => {
+      console.error('Error deleting product:', error);
+      alert('Failed to delete product. Please try again.');
+    },
+  });
+
+  const handleAddProduct = (productData: InsertProduct) => {
+    createProductMutation.mutate(productData);
   };
 
-  const handleEditProduct = async (productId: string, updates: InsertProduct) => {
-    console.log('Editing product:', productId, updates);
-    setIsSubmitting(true);
-    
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    setProducts(prev => prev.map(product => 
-      product.id === productId 
-        ? { ...product, ...updates }
-        : product
-    ));
-    
-    setEditingProduct(null);
-    setIsSubmitting(false);
-    
-    console.log('Product updated successfully');
+  const handleEditProduct = (productId: string, updates: InsertProduct) => {
+    updateProductMutation.mutate({ id: productId, updates });
   };
 
-  const handleDeleteProduct = async (productId: string) => {
-    console.log('Deleting product:', productId);
-    
+  const handleDeleteProduct = (productId: string) => {
     if (window.confirm('Are you sure you want to delete this product? This action cannot be undone.')) {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      setProducts(prev => prev.filter(product => product.id !== productId));
-      console.log('Product deleted successfully');
+      deleteProductMutation.mutate(productId);
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background p-4">
+        <div className="max-w-4xl mx-auto text-center py-12">
+          <p className="text-muted-foreground">Loading products...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-background p-4">
+        <div className="max-w-4xl mx-auto text-center py-12">
+          <p className="text-destructive">Error loading products. Please try refreshing the page.</p>
+        </div>
+      </div>
+    );
+  }
 
   if (currentView === "add") {
     return (
@@ -101,7 +146,7 @@ export default function InventoryApp() {
           <AddProductForm
             onSubmit={handleAddProduct}
             onCancel={() => setCurrentView("list")}
-            isSubmitting={isSubmitting}
+            isSubmitting={createProductMutation.isPending}
           />
         </div>
       </div>
@@ -123,7 +168,7 @@ export default function InventoryApp() {
           isOpen={!!editingProduct}
           onClose={() => setEditingProduct(null)}
           onSave={handleEditProduct}
-          isSubmitting={isSubmitting}
+          isSubmitting={updateProductMutation.isPending}
         />
       </div>
     </div>
